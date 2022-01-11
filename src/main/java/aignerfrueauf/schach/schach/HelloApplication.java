@@ -12,16 +12,19 @@ import java.io.IOException;
 
 public class HelloApplication extends Application {
     double resolution = 1;
+    int pixels = 272;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         GridPane pane = initiatePane(stage);
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
 
-        Scene chessScene = new Scene(pane, 272*resolution,272*resolution);
+        Scene chessScene = new Scene(pane, pixels*resolution,pixels*resolution);
         stage.setTitle("Schach!");
         stage.setScene(chessScene);
         stage.show();
+
     }
 
     private GridPane initiatePane(Stage stage){
@@ -29,7 +32,7 @@ public class HelloApplication extends Application {
 
         // Create 64 rectangles and add to pane
         int count = 0;
-        double s = 34*resolution; // side of rectangle
+        double s = pixels/8f*resolution; // side of rectangle
         for (int i = 0; i < 8; i++) {
             count++;
             for (int j = 0; j < 8; j++) {
