@@ -57,8 +57,8 @@ public class Main extends Application {
     static final String blackIdentifier = "B";
     static final String whiteIdentifier = "W";
 
-    static final String validField = "v";
-    static final String hitPieceField = "h";
+    static final String validField = "V";
+    static final String hitPieceField = "H";
 
     GridPane chessPane;
     static String[][] piecesPositions;
@@ -94,16 +94,13 @@ public class Main extends Application {
     }
 
     public void movePiece(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
-        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].equals(validField)){
+        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].contains(validField)){
             removePiece(FINALROW,FINALCOLUMN);
         }
 
-        //chessPane.add(returnNewImage(INITIALROW,INITIALCOLUMN),FINALROW,FINALCOLUMN);
         piecesPositions[FINALCOLUMN][FINALROW] = returnPieceId(INITIALROW,INITIALCOLUMN);
 
         removePiece(INITIALCOLUMN,INITIALROW);
-        removeValidFields(chessPane);
-
         updatePane(chessPane);
     }
 
@@ -112,7 +109,7 @@ public class Main extends Application {
     int firstColumn;
     int secondColumn;
     int secondRow;
-    void  onPress(MouseEvent event) {
+    void  onPress(MouseEvent event){
         Node source;
         if (!pieceSelected){
             source = (Node) event.getSource();
@@ -153,18 +150,21 @@ public class Main extends Application {
             source = (Node) event.getSource();
 
             getSecondVariables(source);
-                if(piecesPositions[secondRow][secondColumn].contains(whiteIdentifier) && isWhite){ //check if selected other piece
+                if((piecesPositions[secondColumn][secondRow].contains(whiteIdentifier) && isWhite) ||(piecesPositions[secondColumn][secondRow].contains(blackIdentifier) && !isWhite)){ //check if selected other piece
                     getSecondVariables(source);
-                }else if(piecesPositions[secondRow][secondColumn].contains(blackIdentifier) && !isWhite){ // check if selected other piece
-                    getSecondVariables(source);
-                }else {
+                }else if(secondColumn == firstColumn && secondRow == firstRow){
+                    System.out.println("Gleiches Feld");
+                    System.out.println("First Press" + firstColumn + ";" + firstRow);
+                    System.out.println("Second Press lol" + secondColumn + ";" + secondRow);
+                    System.out.println("");
+                }
+                else {
                     checkMovable(firstRow,firstColumn,secondRow,secondColumn);
                     pieceSelected = false;
                     isWhite=!isWhite;
                 }
+            cleanArray();
             System.out.println("Second Press: " + secondRow+","+secondColumn);
-
-
         }
         for (int i = 0;i < piecesPositions.length; i++) {
             for (int j = 0; j < piecesPositions[i].length; j++) {
@@ -216,14 +216,6 @@ public class Main extends Application {
         piecesPositions[FINALCOLUMN][FINALROW] = "";
     }
 
-    private void removeValidFields(GridPane pane){
-        for (int i = 0; i < piecesPositions.length; i++) {
-            for (int j = 0; j < piecesPositions[i].length; j++) {
-                piecesPositions[i][j] = piecesPositions[i][j].replace(validField,"");
-                piecesPositions[i][j] = piecesPositions[i][j].replace(hitPieceField,"");
-            }
-        }
-    }
 
     private void setUpPane(GridPane pane){
         placeWhitePiecesArray();
@@ -235,6 +227,15 @@ public class Main extends Application {
         placeRectangles(chessPane);
         placePiecesGrid(chessPane);
         placeButtons(chessPane);
+    }
+
+    private void cleanArray(){
+        for (int i = 0; i < piecesPositions.length; i++) {
+            for (int j = 0; j < piecesPositions[i].length; j++) {
+                piecesPositions[i][j] = piecesPositions[i][j].replace(validField,"");
+                piecesPositions[i][j] = piecesPositions[i][j].replace(hitPieceField,"");
+            }
+        }
     }
 
     private void placeRectangles(GridPane pane){
@@ -357,9 +358,7 @@ public class Main extends Application {
             launch();
         }
 
-    public static String returnPieceId(int row,int column){
-        return piecesPositions[row][column];
-    }
+    public static String returnPieceId(int row,int column){return piecesPositions[row][column];}
     public static ImageView returnNewImage(int row,int column){
         String pieceId = piecesPositions[row][column];
         //black
