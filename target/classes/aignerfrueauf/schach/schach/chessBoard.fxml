@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="292.0" prefWidth="292.0" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aignerfrueauf.schach.schach.BoardController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <children>
+      <GridPane id="chessBoard" fx:id="chessBoard">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" prefWidth="34.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="34.0" prefHeight="34.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+         </children>
+      </GridPane>
+   </children>
+</VBox>

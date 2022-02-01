@@ -112,7 +112,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>aignerfrueauf.schach.schach/aignerfrueauf.schach.schach.HelloApplication
+                            <mainClass>aignerfrueauf.schach.schach/aignerfrueauf.schach.schach.Main
                             </mainClass>
                         </configuration>
                     </execution>
