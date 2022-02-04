@@ -115,7 +115,7 @@ public class Main extends Application {
             source = (Node) event.getSource();
 
             getFirstVariables(source);
-            if(!piecesPositions[firstRow][firstColumn].equals("")){
+            if(!piecesPositions[firstColumn][firstRow].equals("")){
                 if(piecesPositions[firstRow][firstColumn].contains(whiteIdentifier) && isWhite || piecesPositions[firstRow][firstColumn].contains(blackIdentifier) && !isWhite){
                     pieceSelected = true;
                     switch (returnPieceId(firstRow,firstColumn)){
@@ -203,12 +203,12 @@ public class Main extends Application {
         }
     }
     private void getFirstVariables(Node source){
-        firstColumn = chessPane.getColumnIndex(source);
-        firstRow = chessPane.getRowIndex(source);
+        firstColumn = GridPane.getColumnIndex(source);
+        firstRow = GridPane.getRowIndex(source);
     }
     private void getSecondVariables(Node source){
-        secondColumn = chessPane.getRowIndex(source);
-        secondRow = chessPane.getColumnIndex(source);
+        secondColumn = GridPane.getRowIndex(source);
+        secondRow = GridPane.getColumnIndex(source);
     }
 
 
