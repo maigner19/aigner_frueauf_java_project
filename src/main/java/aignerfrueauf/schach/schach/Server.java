@@ -41,12 +41,16 @@ public class Server {
         System.out.println("verbunden lol");
         BufferedReader rein = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintStream raus = new PrintStream(socket.getOutputStream());
-        String s;
+        String move ="0,0,0,0";
 
-        while(true) {
-            raus.println("hallo");
+        ChessBoard board = new ChessBoard();
+        board.startChess();
+        board.setIsWhite(true);
+        while(!move.equals("f")) {
+            move = board.playChessMove(move);
+            raus.println(move);
 
-            rein.readLine();
+            move = rein.readLine();
         }
     }
 

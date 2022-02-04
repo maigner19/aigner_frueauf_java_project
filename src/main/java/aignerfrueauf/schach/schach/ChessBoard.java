@@ -69,6 +69,34 @@ public class ChessBoard extends Application {
 
     }
 
+    public String playChessMove(String move){
+        String[] splitted = move.split(",");
+
+        boolean finished = movePiece(Integer.parseInt(splitted[0]),Integer.parseInt(splitted[1]),Integer.parseInt(splitted[2]),Integer.parseInt(splitted[3]));
+        enableAllButtons();
+
+        if(!finished){
+            disableAllButtons();
+            return firstRow+","+firstColumn+","+secondRow+","+secondColumn;
+        }
+        return "f";
+    }
+
+    private void disableAllButtons() {
+            for (Node node : chessPane.getChildren()) {
+                if(node instanceof Button){
+                    node.setDisable(true);
+                }
+            }
+        }
+    private void enableAllButtons(){
+        for (Node node : chessPane.getChildren()) {
+            if(node instanceof Button){
+                node.setDisable(false);
+            }
+        }
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         chessPane = new GridPane();
@@ -93,7 +121,7 @@ public class ChessBoard extends Application {
         }
     }
 
-    public void movePiece(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
+    public boolean movePiece(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
         if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].contains(validField)){
             removePiece(FINALROW,FINALCOLUMN);
         }
@@ -102,6 +130,12 @@ public class ChessBoard extends Application {
 
         removePiece(INITIALCOLUMN,INITIALROW);
         updatePane(chessPane);
+
+        return checkFinished();
+    }
+
+    public boolean checkFinished(){
+        return false;
     }
 
     boolean pieceSelected=false;
@@ -354,7 +388,7 @@ public class ChessBoard extends Application {
         piecesPositions[7][7] = whiteRook;
     }
 
-    public static void main (String[]args){
+    public void startChess (){
             launch();
         }
 

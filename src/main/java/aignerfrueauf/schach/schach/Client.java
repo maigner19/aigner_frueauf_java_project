@@ -22,11 +22,16 @@ public class Client {
             InputStream rein = socket.getInputStream();
             BufferedReader buff = new BufferedReader(new InputStreamReader(rein));
 
+            String move = "";
 
-            while (true) {
-                System.out.println(buff.readLine());
+            ChessBoard board = new ChessBoard();
+            board.startChess();
+            board.setIsWhite(false);
+            while(!move.equals("f")) {
+                move = buff.readLine();
 
-                ps.println();
+                move = board.playChessMove(move);
+                ps.println(move);
             }
 
         }  catch (IOException e) {
