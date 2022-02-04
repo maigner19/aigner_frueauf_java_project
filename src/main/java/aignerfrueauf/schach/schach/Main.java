@@ -109,7 +109,7 @@ public class Main extends Application {
     int firstColumn;
     int secondColumn;
     int secondRow;
-    void  onPress(MouseEvent event){
+    void onPress(MouseEvent event){
         Node source;
         if (!pieceSelected){
             source = (Node) event.getSource();

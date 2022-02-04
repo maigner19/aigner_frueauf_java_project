@@ -6,12 +6,12 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class Server {
-
-    private String ipAddress;
+    public static int port = 3141;
     private final ServerSocket server;
-    public Server(int port) throws IOException {
+    public Server() throws IOException {
         server = new ServerSocket(port);
     }
 
@@ -22,9 +22,9 @@ public class Server {
             try {
                 socket = server.accept();
                 reinRaus(socket);
-            }
-
-            catch (IOException e) {
+            }catch (SocketException e){
+                System.out.println("Client hat die verbindung abgebrochen");
+            }catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 if (socket != null)
@@ -38,11 +38,12 @@ public class Server {
     }
 
     private void reinRaus(Socket socket) throws IOException {
+        System.out.println("verbunden lol");
         BufferedReader rein = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintStream raus = new PrintStream(socket.getOutputStream());
         String s;
 
-        while(rein.ready()) {
+        while(true) {
             raus.println("hallo");
 
             rein.readLine();
@@ -50,7 +51,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server(3141);
+        Server server = new Server();
         server.verbinde();
     }
 }
