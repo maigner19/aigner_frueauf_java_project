@@ -388,8 +388,8 @@ public class ChessBoard extends Application {
         piecesPositions[7][7] = whiteRook;
     }
 
-    public void startChess (){
-            launch();
+    public void startChess (Stage stage) throws IOException {
+        start(stage);
         }
 
     public static String returnPieceId(int row,int column){return piecesPositions[row][column];}

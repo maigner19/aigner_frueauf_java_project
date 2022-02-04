@@ -44,7 +44,7 @@ public class Server {
         String move ="0,0,0,0";
 
         ChessBoard board = new ChessBoard();
-        board.startChess();
+        board.startChess(ServerClientConnect.getStage());
         board.setIsWhite(true);
         while(!move.equals("f")) {
             move = board.playChessMove(move);

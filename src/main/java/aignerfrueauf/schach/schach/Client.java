@@ -25,7 +25,7 @@ public class Client {
             String move = "";
 
             ChessBoard board = new ChessBoard();
-            board.startChess();
+            board.startChess(ServerClientConnect.getStage());
             board.setIsWhite(false);
             while(!move.equals("f")) {
                 move = buff.readLine();

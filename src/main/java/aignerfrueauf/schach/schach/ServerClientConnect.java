@@ -12,8 +12,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class ServerClientConnect extends Application {
+    static Stage stage;
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
         double size = 408;
 
         FXMLLoader fxmlLoader = new FXMLLoader(ServerClientConnect.class.getResource("ClientServer.fxml"));
@@ -34,7 +36,9 @@ public class ServerClientConnect extends Application {
         button.disableProperty().bind(booleanBind);
 
     }
-
+    public static Stage getStage(){
+        return stage;
+    }
     public static void main (String[]args){
         launch();
     }
