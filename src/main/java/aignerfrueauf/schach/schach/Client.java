@@ -1,5 +1,7 @@
 package aignerfrueauf.schach.schach;
 
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -12,7 +14,7 @@ public class Client {
         this.ipAddress = strings[1];
     }
 
-    public void clientConnect() throws IOException {
+    public void clientConnect(Stage stage) throws IOException {
         Socket socket = null;
         try {
             socket = new Socket(ipAddress, port);
@@ -25,13 +27,20 @@ public class Client {
             String move = "";
 
             ChessBoard board = new ChessBoard();
-            board.startChess(ServerClientConnect.getStage());
+            board.startChess(stage);
             board.setIsWhite(false);
+
             while(!move.equals("f")) {
+                /**
                 move = buff.readLine();
 
+                System.out.println(move);
                 move = board.playChessMove(move);
                 ps.println(move);
+                 **/
+                move = buff.readLine();
+
+                ps.println(board.playChessMove(move));
             }
 
         }  catch (IOException e) {

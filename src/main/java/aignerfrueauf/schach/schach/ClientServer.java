@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 
@@ -13,28 +14,34 @@ public class ClientServer {
     public TextField inputIp;
     public Label invalidAddress;
 
+
     String port = "3141";
     String ip;
     String[] strings = new String[2];
     String regex = "\"^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\\\.(?!$)|$)){4}$\"";
+
+    Stage stage = ServerClientConnect.getStage();
 
     public ClientServer(){
         strings[0] = port;
     }
 
     public void pressServer(ActionEvent actionEvent) throws IOException {
-        Server.main(strings);
+        Server server = new Server(Integer.parseInt(port));
+        server.verbinde(stage);
     }
 
     public void pressJoin(ActionEvent actionEvent) {
         String ip = inputIp.getText();
-        if(true){
+
+        ip = "localhost";
+        if(true /**ip.matches(regex)**/){
             invalidAddress.setOpacity(0);
             strings[1] = ip;
 
             Client client = new Client(strings);
             try {
-                client.clientConnect();
+                client.clientConnect(stage);
             } catch (IOException e) {
                 invalidAddress.setText("No Server with this Address");
                 invalidAddress.setOpacity(1);

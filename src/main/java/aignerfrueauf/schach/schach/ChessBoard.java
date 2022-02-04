@@ -60,7 +60,7 @@ public class ChessBoard extends Application {
     static final String validField = "V";
     static final String hitPieceField = "H";
 
-    GridPane chessPane;
+    GridPane chessPane = new GridPane();
     static String[][] piecesPositions;
 
     static boolean isWhite = true;
@@ -70,9 +70,11 @@ public class ChessBoard extends Application {
     }
 
     public String playChessMove(String move){
-        String[] splitted = move.split(",");
-
-        boolean finished = movePiece(Integer.parseInt(splitted[0]),Integer.parseInt(splitted[1]),Integer.parseInt(splitted[2]),Integer.parseInt(splitted[3]));
+        boolean finished =  false;
+        if (!move.equals("first")) {
+            String[] splitted = move.split(",");
+            finished = movePiece(Integer.parseInt(splitted[0]),Integer.parseInt(splitted[1]),Integer.parseInt(splitted[2]),Integer.parseInt(splitted[3]));
+        }
         enableAllButtons();
 
         if(!finished){
@@ -99,17 +101,15 @@ public class ChessBoard extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        chessPane = new GridPane();
         chessPane.resize(pixels, pixels);
         for (int i = 0; i < piecesPositions.length; i++) Arrays.fill(piecesPositions[i], "");
         setUpPane(chessPane);
         Scene chessScene = new Scene(chessPane, pixels * resolution, pixels * resolution);
 
 
-
+        stage.setScene(chessScene);
         stage.setTitle("Schach");
         stage.getIcons().add(new Image(bKing));
-        stage.setScene(chessScene);
         stage.setResizable(false);
         stage.show();
     }
@@ -195,7 +195,7 @@ public class ChessBoard extends Application {
                 else {
                     checkMovable(firstRow,firstColumn,secondRow,secondColumn);
                     pieceSelected = false;
-                    isWhite=!isWhite;
+                    //isWhite=!isWhite;
                 }
             cleanArray();
             System.out.println("Second Press: " + secondRow+","+secondColumn);
@@ -478,5 +478,9 @@ public class ChessBoard extends Application {
 
     public void setIsWhite(boolean isWhite){
         this.isWhite = isWhite;
+    }
+
+    public GridPane getChessPane(){
+        return chessPane;
     }
 }
