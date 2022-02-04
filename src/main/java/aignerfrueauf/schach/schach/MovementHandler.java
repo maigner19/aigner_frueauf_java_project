@@ -16,13 +16,13 @@ public class MovementHandler {
 
 
                 try{
-                    if(grid[column-1][row+1].contains(Main.blackIdentifier)){
+                    if(grid[column-1][row+1].contains(ChessBoard.blackIdentifier)){
                         highlightGrid(grid,column-1,row+1, true, false);
                     }
                 }catch (ArrayIndexOutOfBoundsException ignored){}
 
                 try{
-                    if(grid[column-1][row-1].contains(Main.blackIdentifier)){
+                    if(grid[column-1][row-1].contains(ChessBoard.blackIdentifier)){
                         highlightGrid(grid,column-1,row-1, true, false);
                     }
                 }catch (ArrayIndexOutOfBoundsException ignored){}
@@ -39,7 +39,7 @@ public class MovementHandler {
 
 
                 try{
-                    if(grid[column+1][row+1].contains(Main.whiteIdentifier)){
+                    if(grid[column+1][row+1].contains(ChessBoard.whiteIdentifier)){
                         highlightGrid(grid,column+1,row+1, false, false);
                     }
                 }catch (ArrayIndexOutOfBoundsException ignored){
@@ -47,7 +47,7 @@ public class MovementHandler {
                 }
 
                 try{
-                    if(grid[column+1][row-1].contains(Main.whiteIdentifier)){
+                    if(grid[column+1][row-1].contains(ChessBoard.whiteIdentifier)){
                         highlightGrid(grid,column+1,row-1, false, false);
                     }
                 }catch (ArrayIndexOutOfBoundsException ignored){
@@ -120,14 +120,14 @@ public class MovementHandler {
         try{
         if(colum < 8 && row < 8 && colum >= 0 && row >= 0){
             if(( (grid[colum][row].equals("")))){
-                grid[colum][row] = grid[colum][row]+Main.validField;
+                grid[colum][row] = grid[colum][row]+ ChessBoard.validField;
                 return false;
 
-            }else if(((grid[colum][row].contains(Main.blackIdentifier) && isWhite) || (grid[colum][row].contains(Main.whiteIdentifier) && !isWhite)) && !isPawn){
-                grid[colum][row] = grid[colum][row]+ Main.hitPieceField;
+            }else if(((grid[colum][row].contains(ChessBoard.blackIdentifier) && isWhite) || (grid[colum][row].contains(ChessBoard.whiteIdentifier) && !isWhite)) && !isPawn){
+                grid[colum][row] = grid[colum][row]+ ChessBoard.hitPieceField;
                 return true;
 
-            }else if(((grid[colum][row].contains(Main.whiteIdentifier) && isWhite) || (grid[colum][row].contains(Main.blackIdentifier) && !isWhite)) && !isPawn){
+            }else if(((grid[colum][row].contains(ChessBoard.whiteIdentifier) && isWhite) || (grid[colum][row].contains(ChessBoard.blackIdentifier) && !isWhite)) && !isPawn){
                 return true;
             }
         }

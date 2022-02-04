@@ -10,8 +10,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class BoardController {
-    Color validMove;
-    public GridPane chessBoard;
 
 
     @FXML

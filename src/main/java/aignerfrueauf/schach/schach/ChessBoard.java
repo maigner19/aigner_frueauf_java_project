@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Main extends Application {
+public class ChessBoard extends Application {
     static double resolution = 1.5;
     static int pixels = 272;   //272
     static float gridCount = 8;
@@ -64,7 +64,7 @@ public class Main extends Application {
     static String[][] piecesPositions;
 
     static boolean isWhite = true;
-    public Main(){
+    public ChessBoard(){
         piecesPositions = new String[8][8];
 
     }
@@ -79,7 +79,7 @@ public class Main extends Application {
 
 
 
-        stage.setTitle("Schach!");
+        stage.setTitle("Schach");
         stage.getIcons().add(new Image(bKing));
         stage.setScene(chessScene);
         stage.setResizable(false);
@@ -176,7 +176,7 @@ public class Main extends Application {
     }
 
     public void highightAllValidMoves(GridPane pane ,String[][] grid){
-        double gridSize =  Main.gridSize;
+        double gridSize =  ChessBoard.gridSize;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if(grid[i][j].equals(validField)){

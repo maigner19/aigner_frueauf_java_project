@@ -9,21 +9,21 @@ import java.net.Socket;
 import java.net.SocketException;
 
 public class Server {
-    public static int port = 3141;
     private final ServerSocket server;
-    public Server() throws IOException {
+    public Server(int port) throws IOException {
         server = new ServerSocket(port);
     }
 
     private void verbinde() {
-
-        while (true) {
+        boolean verbunden = true;
+        while (verbunden) {
             Socket socket = null;
             try {
                 socket = server.accept();
                 reinRaus(socket);
             }catch (SocketException e){
                 System.out.println("Client hat die verbindung abgebrochen");
+                verbunden = false;
             }catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -51,7 +51,7 @@ public class Server {
     }
 
     public static void main(String[] args) throws IOException {
-        Server server = new Server();
+        Server server = new Server(Integer.parseInt(args[0]));
         server.verbinde();
     }
 }
