@@ -15,20 +15,24 @@ public class ClientServer {
 
     String port = "3141";
     String ip;
-    String[] args = {port};
+    String[] strings = new String[2];
     String regex = "\"^(([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\\\\.(?!$)|$)){4}$\"";
 
+    public ClientServer(){
+        strings[0] = port;
+    }
+
     public void pressServer(ActionEvent actionEvent) throws IOException {
-        Server.main(args);
+        Server.main(strings);
     }
 
     public void pressJoin(ActionEvent actionEvent) {
         String ip = inputIp.getText();
         if(ip.matches(regex)){
             invalidAddress.setOpacity(0);
-            args[1] = ip;
+            strings[1] = ip;
 
-            Client client = new Client(args);
+            Client client = new Client(strings);
             try {
                 client.clientConnect();
             } catch (IOException e) {

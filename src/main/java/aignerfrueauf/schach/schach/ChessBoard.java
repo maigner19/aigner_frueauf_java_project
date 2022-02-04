@@ -389,7 +389,8 @@ public class ChessBoard extends Application {
     }
 
     public void startChess (){
-            launch();
+
+        launch();
         }
 
     public static String returnPieceId(int row,int column){return piecesPositions[row][column];}
