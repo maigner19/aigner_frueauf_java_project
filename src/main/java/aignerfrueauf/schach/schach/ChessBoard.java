@@ -1,6 +1,7 @@
 package aignerfrueauf.schach.schach;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -60,26 +61,37 @@ public class ChessBoard extends Application {
     static final String validField = "V";
     static final String hitPieceField = "H";
 
-    GridPane chessPane = new GridPane();
+    final GridPane chessPane;
     static String[][] piecesPositions;
+    Scene chessScene;
 
-    static boolean isWhite = true;
-    public ChessBoard(){
+    final boolean isWhite;
+    public ChessBoard(boolean isWhite){
+        this.isWhite = isWhite;
+        chessPane = new GridPane();
         piecesPositions = new String[8][8];
 
+        chessPane.resize(pixels, pixels);
+        for (int i = 0; i < piecesPositions.length; i++) Arrays.fill(piecesPositions[i], "");
+        setUpPane(chessPane);
     }
 
+    private boolean finished;
+    private boolean moveFinished;
     public String playChessMove(String move){
-        boolean finished =  false;
-        if (!move.equals("first")) {
+        moveFinished = false;
+        finished = false;
+        if (!move.equals("first") && !move.equals("")) {
             String[] splitted = move.split(",");
             finished = movePiece(Integer.parseInt(splitted[0]),Integer.parseInt(splitted[1]),Integer.parseInt(splitted[2]),Integer.parseInt(splitted[3]));
         }
         enableAllButtons();
 
+        //Platform.enterNestedEventLoop();
+
         if(!finished){
             disableAllButtons();
-            return firstRow+","+firstColumn+","+secondRow+","+secondColumn;
+            return firstColumn+","+firstRow+","+secondColumn+","+secondRow;
         }
         return "f";
     }
@@ -101,36 +113,32 @@ public class ChessBoard extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        chessPane.resize(pixels, pixels);
-        for (int i = 0; i < piecesPositions.length; i++) Arrays.fill(piecesPositions[i], "");
-        setUpPane(chessPane);
-        Scene chessScene = new Scene(chessPane, pixels * resolution, pixels * resolution);
-
-
-        stage.setScene(chessScene);
         stage.setTitle("Schach");
         stage.getIcons().add(new Image(bKing));
         stage.setResizable(false);
         stage.show();
+
+        disableAllButtons();
     }
 
 
-    public void checkMovable(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
+    public void checkMovable(final int INITIALCOLUMN,final int INITIALROW,final int FINALCOLUMN,final int FINALROW){
         if(!piecesPositions[FINALCOLUMN][FINALROW].equals("")){
-            movePiece(INITIALROW,INITIALCOLUMN,FINALROW,FINALCOLUMN);
+            movePiece(INITIALCOLUMN,INITIALROW,FINALCOLUMN,FINALROW);
         }
     }
 
-    public boolean movePiece(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
+    public boolean movePiece(final int INITIALCOLUMN,final int INITIALROW,final int FINALCOLUMN,final int FINALROW){
         if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].contains(validField)){
-            removePiece(FINALROW,FINALCOLUMN);
+            removePiece(FINALCOLUMN,FINALROW);
         }
 
-        piecesPositions[FINALCOLUMN][FINALROW] = returnPieceId(INITIALROW,INITIALCOLUMN);
+        piecesPositions[FINALCOLUMN][FINALROW] = returnPieceId(INITIALCOLUMN,INITIALROW);
 
         removePiece(INITIALCOLUMN,INITIALROW);
         updatePane(chessPane);
 
+        moveFinished = true;
         return checkFinished();
     }
 
@@ -150,26 +158,26 @@ public class ChessBoard extends Application {
 
             getFirstVariables(source);
             if(!piecesPositions[firstColumn][firstRow].equals("")){
-                if(piecesPositions[firstRow][firstColumn].contains(whiteIdentifier) && isWhite || piecesPositions[firstRow][firstColumn].contains(blackIdentifier) && !isWhite){
+                if(piecesPositions[firstColumn][firstRow].contains(whiteIdentifier) && isWhite || piecesPositions[firstColumn][firstRow].contains(blackIdentifier) && !isWhite){
                     pieceSelected = true;
                     switch (returnPieceId(firstRow,firstColumn)){
                         case blackPawn, whitePawn://pawn
-                            MovementHandler.highlightPawnMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightPawnMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         case whiteKing, blackKing://king
-                            MovementHandler.highlightKingMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightKingMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         case whiteQueen,blackQueen://queen
-                            MovementHandler.highlightQueenMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightQueenMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         case whiteRook,blackRook://rook
-                            MovementHandler.highlightRookMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightRookMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         case whiteKnight,blackKnight://knight
-                            MovementHandler.highlightKnightMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightKnightMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         case whiteBishop,blackBishop://bishop
-                            MovementHandler.highlightBishopMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
+                            MovementHandler.highlightBishopMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
                             break;
                         default:
                             break;
@@ -179,7 +187,7 @@ public class ChessBoard extends Application {
                 }
             }
 
-            System.out.println("First Press: " + firstRow+","+firstColumn);
+            System.out.println("First Press: " +firstColumn +","+firstRow);
         }else {// second click
             source = (Node) event.getSource();
 
@@ -193,12 +201,12 @@ public class ChessBoard extends Application {
                     System.out.println("");
                 }
                 else {
-                    checkMovable(firstRow,firstColumn,secondRow,secondColumn);
+                    checkMovable(firstColumn,firstRow,secondColumn,secondRow);
                     pieceSelected = false;
                     //isWhite=!isWhite;
                 }
             cleanArray();
-            System.out.println("Second Press: " + secondRow+","+secondColumn);
+            System.out.println("Second Press: " + secondColumn+","+secondRow);
         }
         for (int i = 0;i < piecesPositions.length; i++) {
             for (int j = 0; j < piecesPositions[i].length; j++) {
@@ -237,8 +245,8 @@ public class ChessBoard extends Application {
         }
     }
     private void getFirstVariables(Node source){
-        firstColumn = GridPane.getColumnIndex(source);
-        firstRow = GridPane.getRowIndex(source);
+        firstColumn = GridPane.getRowIndex(source);
+        firstRow = GridPane.getColumnIndex(source);
     }
     private void getSecondVariables(Node source){
         secondColumn = GridPane.getRowIndex(source);
@@ -246,7 +254,7 @@ public class ChessBoard extends Application {
     }
 
 
-    private void removePiece( final int FINALROW,final int FINALCOLUMN){
+    private void removePiece( final int FINALCOLUMN,final int FINALROW){
         piecesPositions[FINALCOLUMN][FINALROW] = "";
     }
 
@@ -392,9 +400,9 @@ public class ChessBoard extends Application {
         start(stage);
         }
 
-    public static String returnPieceId(int row,int column){return piecesPositions[row][column];}
-    public static ImageView returnNewImage(int row,int column){
-        String pieceId = piecesPositions[row][column];
+    public static String returnPieceId(int column,int row){return piecesPositions[column][row];}
+    public static ImageView returnNewImage(int column,int row){
+        String pieceId = piecesPositions[column][row];
         //black
         switch (pieceId) {
             case blackPawn: {
@@ -474,10 +482,6 @@ public class ChessBoard extends Application {
             default:
                 return null;
         }
-    }
-
-    public void setIsWhite(boolean isWhite){
-        this.isWhite = isWhite;
     }
 
     public GridPane getChessPane(){

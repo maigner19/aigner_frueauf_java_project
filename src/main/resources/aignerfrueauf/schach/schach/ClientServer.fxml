@@ -4,10 +4,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="408.0" prefWidth="408.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aignerfrueauf.schach.schach.ClientServer">
+<AnchorPane prefHeight="408.0" prefWidth="408.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="aignerfrueauf.schach.schach.ClientServerController">
    <children>
-      <Button fx:id="clientButton" disable="true" layoutX="159.0" layoutY="325.0" mnemonicParsing="false" onAction="#pressJoin" prefHeight="25.0" prefWidth="90.0" text="Join Match" AnchorPane.bottomAnchor="57.80000000000001" AnchorPane.leftAnchor="159.0" AnchorPane.rightAnchor="159.0" />
-      <Button fx:id="serverButton" layoutX="159.0" layoutY="131.0" mnemonicParsing="false" onAction="#pressServer" prefHeight="25.0" prefWidth="90.0" text="Create Match" AnchorPane.leftAnchor="159.0" AnchorPane.rightAnchor="159.0" AnchorPane.topAnchor="131.0" />
+      <Button fx:id="clientButton" disable="true" layoutX="159.0" layoutY="325.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0" text="Join Match" AnchorPane.bottomAnchor="57.80000000000001" AnchorPane.leftAnchor="159.0" AnchorPane.rightAnchor="159.0" />
+      <Button fx:id="serverButton" layoutX="159.0" layoutY="131.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="90.0" text="Create Match" AnchorPane.leftAnchor="159.0" AnchorPane.rightAnchor="159.0" AnchorPane.topAnchor="131.0" />
       <TextField fx:id="inputIp" alignment="CENTER" layoutX="130.0" layoutY="268.0" promptText="IP-Address" AnchorPane.bottomAnchor="114.80000000000001" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="129.2" />
       <Label alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="33.0" text="Chess" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="33.0">
          <font>

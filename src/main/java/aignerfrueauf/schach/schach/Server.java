@@ -1,5 +1,7 @@
 package aignerfrueauf.schach.schach;
 
+import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.BufferedReader;
@@ -9,17 +11,18 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.time.LocalDateTime;
 
 
 public class Server {
     Stage stage;
     private final ServerSocket server;
-    public Server(int port) throws IOException {
+    public Server(int port, Stage stage) throws IOException {
         server = new ServerSocket(port);
+        this.stage = stage;
     }
 
-    public void verbinde(Stage stage) {
-        this.stage = stage;
+    public void verbinde() {
         System.out.println("Server will verbinden");
 
         boolean verbunden = true;
@@ -48,28 +51,24 @@ public class Server {
         System.out.println("verbunden lol");
         BufferedReader rein = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         PrintStream raus = new PrintStream(socket.getOutputStream());
-        String move = "5,5,5,5";
+        String move = "first";
 
-        ChessBoard board = new ChessBoard();
+        ChessBoard board = new ChessBoard(true);
+        stage.setScene(new Scene(board.chessPane));
+        stage.setTitle("Server");
         board.startChess(stage);
-        board.setIsWhite(true);
 
-        while(!move.equals("f")) {
-            /**
+        String tmpMove;
+        while(!move.equals("f") && rein.ready()) {
             move = board.playChessMove(move);
-            System.out.println("Sever move: " + move);
             raus.println(move);
 
-            move = rein.readLine();
-            **/
-            raus.println(board.playChessMove(move));
-
-            move = rein.readLine();
+            do {
+                tmpMove = rein.readLine();
+            }while (tmpMove.equals(move));
+            move = tmpMove;
         }
+
+        System.out.println("Aufgehört" + LocalDateTime.now());
     }
-/**
-    public static void main(String[] args) throws IOException {
-        Server server = new Server(Integer.parseInt(args[0]));
-        server.verbinde();
-    }**/
 }
