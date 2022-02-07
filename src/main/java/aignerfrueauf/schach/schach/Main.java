@@ -1,23 +1,28 @@
 package aignerfrueauf.schach.schach;
 
 import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Arrays;
 
-public class ChessBoard extends Application {
+public class Main extends Application {
     static double resolution = 1.5;
     static int pixels = 272;   //272
     static float gridCount = 8;
@@ -25,7 +30,7 @@ public class ChessBoard extends Application {
 
     final Color WHITE =Color.WHEAT;
     final Color BLACK =Color.valueOf("#A68567");
-    final Color HIGLIGHT = Color.DARKKHAKI;
+    final Color HIGLIGHT = Color.LIGHTGRAY;
     final Color HITCOLOR = Color.RED;
 
     static String bKing = "file:piecesImg/bKing.png";
@@ -61,192 +66,170 @@ public class ChessBoard extends Application {
     static final String validField = "V";
     static final String hitPieceField = "H";
 
-    final GridPane chessPane;
+    GridPane chessPane;
     static String[][] piecesPositions;
-    Scene chessScene;
 
-    final boolean isWhite;
-    public ChessBoard(boolean isWhite){
-        this.isWhite = isWhite;
-        chessPane = new GridPane();
+    static boolean isWhite = true;
+    public Main(){
         piecesPositions = new String[8][8];
 
+    }
+
+    Stage stage;
+    @Override
+    public void start(Stage stage) throws IOException {
+        this.stage = stage;
+        chessPane = new GridPane();
         chessPane.resize(pixels, pixels);
+        chessPane.setAlignment(Pos.CENTER);
         for (int i = 0; i < piecesPositions.length; i++) Arrays.fill(piecesPositions[i], "");
-        setUpPane(chessPane);
+        setUpPane();
+        Scene chessScene = new Scene(chessPane, pixels * resolution, pixels * resolution);
+
+
+
+        stage.setTitle("Schach!");
+        stage.getIcons().add(new Image(bKing));
+        stage.setScene(chessScene);
+        stage.setResizable(false);
+        stage.show();
     }
 
-    private boolean finished;
-    private boolean moveFinished;
-    public String playChessMove(String move){
-        moveFinished = false;
-        finished = false;
-        if (!move.equals("first") && !move.equals("")) {
-            String[] splitted = move.split(",");
-            finished = movePiece(Integer.parseInt(splitted[0]),Integer.parseInt(splitted[1]),Integer.parseInt(splitted[2]),Integer.parseInt(splitted[3]));
+    public void checkMovable(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
+        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("")){
+            movePiece(INITIALROW,INITIALCOLUMN,FINALROW,FINALCOLUMN);
         }
-        enableAllButtons();
-
-        //Platform.enterNestedEventLoop();
-
-        if(!finished){
-            disableAllButtons();
-            return firstColumn+","+firstRow+","+secondColumn+","+secondRow;
-        }
-        return "f";
     }
 
-    private void disableAllButtons() {
-            for (Node node : chessPane.getChildren()) {
-                if(node instanceof Button){
-                    node.setDisable(true);
+    public void movePiece(final int INITIALROW,final int INITIALCOLUMN,final int FINALROW,final int FINALCOLUMN){
+        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].contains(validField)){
+            removePiece(FINALROW,FINALCOLUMN);
+        }
+
+        piecesPositions[FINALCOLUMN][FINALROW] = returnPieceId(INITIALROW,INITIALCOLUMN);
+
+        removePiece(INITIALCOLUMN,INITIALROW);
+        updatePane();
+        checkIfFinished();
+    }
+
+    private void checkIfFinished(){
+        boolean whiteWon = true;
+        boolean blackWon = true;
+        for (String[] piecesPosition : piecesPositions) {
+            for (String s : piecesPosition) {
+                if (s.equals(blackKing)) {
+                    whiteWon = false;
+                    break;
+                }
+                if (s.equals(whiteKing)) {
+                    blackWon = false;
+                    break;
                 }
             }
         }
-    private void enableAllButtons(){
-        for (Node node : chessPane.getChildren()) {
-            if(node instanceof Button){
-                node.setDisable(false);
-            }
+
+        if(whiteWon){
+            openWinField(true);
+        }else if(blackWon){
+            openWinField(false);
         }
     }
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        stage.setTitle("Schach");
-        stage.getIcons().add(new Image(bKing));
-        stage.setResizable(false);
-        stage.show();
+    private void openWinField(boolean whiteWon){
+        Label winText = new Label();
+        winText.setFont(Font.font("Arial", 30));
+        winText.setStyle("-fx-font-weight: bold;");
 
-        disableAllButtons();
-    }
+        StackPane winLayout = new StackPane();
+        winLayout.getChildren().add(winText);
 
+        Scene winScene = new Scene(winLayout, resolution * pixels/2, resolution * pixels/4);
+        Stage winWindow = new Stage();
+        winWindow.setScene(winScene);
 
-    public void checkMovable(final int INITIALCOLUMN,final int INITIALROW,final int FINALCOLUMN,final int FINALROW){
-        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("")){
-            movePiece(INITIALCOLUMN,INITIALROW,FINALCOLUMN,FINALROW);
+        winWindow.setX(stage.getX() + resolution*pixels/4);
+        winWindow.setY(stage.getY() + resolution*pixels/2);
+
+        winWindow.show();
+        if(whiteWon){
+            winText.setText("White wins");
+            winWindow.setTitle("White wins");
+            winWindow.getIcons().add(new Image(wKing));
+        }else {
+            winText.setText("Black wins");
+            winWindow.setTitle("Black wins");
+            winWindow.getIcons().add(new Image(bKing));
         }
     }
 
-    public boolean movePiece(final int INITIALCOLUMN,final int INITIALROW,final int FINALCOLUMN,final int FINALROW){
-        if(!piecesPositions[FINALCOLUMN][FINALROW].equals("") && !piecesPositions[FINALCOLUMN][FINALROW].contains(validField)){
-            removePiece(FINALCOLUMN,FINALROW);
-        }
-
-        piecesPositions[FINALCOLUMN][FINALROW] = returnPieceId(INITIALCOLUMN,INITIALROW);
-
-        removePiece(INITIALCOLUMN,INITIALROW);
-        updatePane(chessPane);
-
-        moveFinished = true;
-        return checkFinished();
-    }
-
-    public boolean checkFinished(){
-        return false;
-    }
 
     boolean pieceSelected=false;
     int firstRow;
     int firstColumn;
     int secondColumn;
     int secondRow;
-    void onPress(MouseEvent event){
+    void  onPress(MouseEvent event){
         Node source;
         if (!pieceSelected){
             source = (Node) event.getSource();
 
             getFirstVariables(source);
-            if(!piecesPositions[firstColumn][firstRow].equals("")){
-                if(piecesPositions[firstColumn][firstRow].contains(whiteIdentifier) && isWhite || piecesPositions[firstColumn][firstRow].contains(blackIdentifier) && !isWhite){
+            if(!piecesPositions[firstRow][firstColumn].equals("")){
+                if(piecesPositions[firstRow][firstColumn].contains(whiteIdentifier) && isWhite || piecesPositions[firstRow][firstColumn].contains(blackIdentifier) && !isWhite){
                     pieceSelected = true;
                     switch (returnPieceId(firstRow,firstColumn)){
                         case blackPawn, whitePawn://pawn
-                            MovementHandler.highlightPawnMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightPawnMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         case whiteKing, blackKing://king
-                            MovementHandler.highlightKingMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightKingMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         case whiteQueen,blackQueen://queen
-                            MovementHandler.highlightQueenMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightQueenMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         case whiteRook,blackRook://rook
-                            MovementHandler.highlightRookMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightRookMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         case whiteKnight,blackKnight://knight
-                            MovementHandler.highlightKnightMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightKnightMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         case whiteBishop,blackBishop://bishop
-                            MovementHandler.highlightBishopMoves(chessPane,piecesPositions,firstColumn,firstRow,isWhite);
+                            MovementHandler.highlightBishopMoves(chessPane,piecesPositions,firstRow,firstColumn,isWhite);
                             break;
                         default:
                             break;
 
-                    } //highlight possible moves
-                    highightAllValidMoves(chessPane,piecesPositions);
+                    }
                 }
             }
 
-            System.out.println("First Press: " +firstColumn +","+firstRow);
+            System.out.println("First Press: " + firstRow+","+firstColumn);
         }else {// second click
             source = (Node) event.getSource();
 
             getSecondVariables(source);
                 if((piecesPositions[secondColumn][secondRow].contains(whiteIdentifier) && isWhite) ||(piecesPositions[secondColumn][secondRow].contains(blackIdentifier) && !isWhite)){ //check if selected other piece
-                    getSecondVariables(source);
+                    getFirstVariables(source);
                 }else if(secondColumn == firstColumn && secondRow == firstRow){
                     System.out.println("Gleiches Feld");
-                    System.out.println("First Press" + firstColumn + ";" + firstRow);
-                    System.out.println("Second Press lol" + secondColumn + ";" + secondRow);
+                    System.out.println("First Press:" + firstColumn + ";" + firstRow);
+                    System.out.println("Second Press:" + secondColumn + ";" + secondRow);
                     System.out.println("");
                 }
                 else {
-                    checkMovable(firstColumn,firstRow,secondColumn,secondRow);
+                    checkMovable(firstRow,firstColumn,secondRow,secondColumn);
                     pieceSelected = false;
-                    //isWhite=!isWhite;
+                    isWhite=!isWhite;
                 }
             cleanArray();
-            System.out.println("Second Press: " + secondColumn+","+secondRow);
         }
-        for (int i = 0;i < piecesPositions.length; i++) {
-            for (int j = 0; j < piecesPositions[i].length; j++) {
-                System.out.print(piecesPositions[i][j]+ "|");
-            }
-            System.out.println("");
-        }
-        updatePane(chessPane);
+        updatePane();
     }
 
-    public void highightAllValidMoves(GridPane pane ,String[][] grid){
-        double gridSize =  ChessBoard.gridSize;
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
-                if(grid[i][j].equals(validField)){
-
-                    Rectangle r = new Rectangle(gridSize,gridSize,gridSize,gridSize);
-                    r.setFill(HIGLIGHT);
-                    r.setOpacity(0.9);
-                    pane.add(r,j,i);
-
-
-                    Circle c = new Circle(gridSize/2);
-                    c.setStyle("-fx-fill:  rgba(255,255,0,0);");
-                    c.setFill(new Color(0,0,0,0));
-                    pane.add(c,j,i);
-
-
-                    Button bt = new Button();
-                    bt.setOnMouseClicked(this::onPress);
-                    bt.setStyle("-fx-background-color:transparent");
-                    bt.setPrefSize(gridSize,gridSize);
-                    pane.add(bt,j,i);
-                }
-            }
-        }
-    }
     private void getFirstVariables(Node source){
-        firstColumn = GridPane.getRowIndex(source);
-        firstRow = GridPane.getColumnIndex(source);
+        firstColumn = GridPane.getColumnIndex(source);
+        firstRow = GridPane.getRowIndex(source);
     }
     private void getSecondVariables(Node source){
         secondColumn = GridPane.getRowIndex(source);
@@ -254,19 +237,20 @@ public class ChessBoard extends Application {
     }
 
 
-    private void removePiece( final int FINALCOLUMN,final int FINALROW){
+    private void removePiece( final int FINALROW,final int FINALCOLUMN){
         piecesPositions[FINALCOLUMN][FINALROW] = "";
     }
 
 
-    private void setUpPane(GridPane pane){
+    private void setUpPane(){
         placeWhitePiecesArray();
         placeBlackPiecesArray();
-        updatePane(pane);
+        updatePane();
     }
 
-    private void updatePane(GridPane pane){
+    private void updatePane(){
         placeRectangles(chessPane);
+        placeValidFields(chessPane);
         placePiecesGrid(chessPane);
         placeButtons(chessPane);
     }
@@ -276,6 +260,29 @@ public class ChessBoard extends Application {
             for (int j = 0; j < piecesPositions[i].length; j++) {
                 piecesPositions[i][j] = piecesPositions[i][j].replace(validField,"");
                 piecesPositions[i][j] = piecesPositions[i][j].replace(hitPieceField,"");
+            }
+        }
+    }
+
+    private void placeValidFields(GridPane pane){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+
+                if(piecesPositions[i][j].equals(validField)){
+                    Circle circle = new Circle(gridSize/4);
+
+                    GridPane.setHalignment(circle, HPos.CENTER);
+                    GridPane.setValignment(circle, VPos.CENTER);
+
+                    circle.setFill(HIGLIGHT);
+                    circle.setOnMouseClicked(this::onPress);
+                    pane.add(circle,j,i);
+                }else if(piecesPositions[i][j].contains(hitPieceField)){
+                    Rectangle r = new Rectangle(gridSize, gridSize, gridSize, gridSize);
+                    r.setFill(HITCOLOR);
+                    r.setOnMouseClicked(this::onPress);
+                    pane.add(r,j,i);
+                }
             }
         }
     }
@@ -292,13 +299,7 @@ public class ChessBoard extends Application {
                 }
                 count++;
 
-                if(piecesPositions[i][j].equals(validField)){
-                    placeRectangleHere(chessPane,i,j,HIGLIGHT);
-                }
 
-                if(piecesPositions[i][j].contains(hitPieceField)){
-                    placeRectangleHere(chessPane,i,j,HITCOLOR);
-                }
             }
         }
     }
@@ -396,13 +397,13 @@ public class ChessBoard extends Application {
         piecesPositions[7][7] = whiteRook;
     }
 
-    public void startChess (Stage stage) throws IOException {
-        start(stage);
+    public static void main (String[]args){
+            launch();
         }
 
-    public static String returnPieceId(int column,int row){return piecesPositions[column][row];}
-    public static ImageView returnNewImage(int column,int row){
-        String pieceId = piecesPositions[column][row];
+    public static String returnPieceId(int row,int column){return piecesPositions[row][column];}
+    public static ImageView returnNewImage(int row,int column){
+        String pieceId = piecesPositions[row][column];
         //black
         switch (pieceId) {
             case blackPawn: {
@@ -484,7 +485,8 @@ public class ChessBoard extends Application {
         }
     }
 
-    public GridPane getChessPane(){
-        return chessPane;
-    }
+    /**
+    public void setIsWhite(boolean isWhite){
+        this.isWhite = isWhite;
+    }**/
 }
