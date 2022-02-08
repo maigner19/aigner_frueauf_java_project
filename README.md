@@ -15,3 +15,7 @@ Geschafft aber wegen unvollständigkeit nicht in der Finalen Version:
 Nicht geschafft:
   Figuren über Netzwerk bewegen,
   Sonderregeln
+
+
+Google Calc:
+https://docs.google.com/spreadsheets/d/105WMcmZ1GP0FGKwEAb3CXicmRYu4Mp_TbNJ-jiMhp3c/edit?usp=sharing
